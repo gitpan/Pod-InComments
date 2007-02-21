@@ -1,0 +1,18 @@
+;=head1 section
+;
+;Section is here for testing and showing purposes only
+;
+;=head2 key
+;
+;key shows us the usage of documenting a parameter
+;using the head2 POD directive
+;
+[section]
+key=1
+parameter2 = another value for something
+
+[very long section name]
+;=head1 very long section name
+;
+;as you can see the documentation can go anywhere
+debug=on

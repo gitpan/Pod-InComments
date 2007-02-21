@@ -1,0 +1,8 @@
+Changes
+Makefile.PL
+MANIFEST
+README
+t/Pod-InComments.t
+t/test.cnf
+lib/Pod/InComments.pm
+META.yml                                 Module meta-data (added by MakeMaker)
