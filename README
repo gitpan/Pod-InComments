@@ -1,8 +1,33 @@
-Pod-InComments version  1.0
+Pod-InComments version  0.9
 ===========================
 
 Module for embedding POD in the comments of your config file.
 With the appropriate routines to extract the whole or parts of it.
+
+
+E.g., when your config file looks like:
+
+;=head1 cpu
+;
+;Specifies cpu settings for normal boxes
+;note that these will override factory settings!
+;
+;=head2 maxload
+;
+;The maxload setting gives an upperbound on how hard
+;the CPU can be pushed.
+
+[cpu]
+maxload=4.0
+
+
+then doing:
+
+my $pod = $podparser->Pod4Section( 'cpu', 'maxload' );
+will give you:
+
+The maxload setting gives an upperbound on how hard
+the CPU can be pushed.
 
 
 INSTALLATION

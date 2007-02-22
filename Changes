@@ -1,6 +1,10 @@
 Revision history for Perl extension Pod::InComments.
 
-1.0  Wed Feb 21 15:13:18 2007
+0.9  Thu Feb 22 2007
+    - added config2pod.pl as an easy utility for extracting POD from your config file
+      fixed DisplayPod method which was not working
+
+0.8  Wed Feb 21 15:13:18 2007
 	- original version; created by h2xs 1.23 with options
 		-A -X Pod::InComments
 

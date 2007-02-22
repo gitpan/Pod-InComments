@@ -1,4 +1,4 @@
-use Test::More tests => 9;
+use Test::More tests => 10;
 
 use_ok('Pod::InComments');
 
@@ -29,4 +29,7 @@ like ($text, qr/as you can see/, 'found helptext for section alone');
 # non existing
 $text = $podparser->Pod4Section('doesnotexist' );
 is($text, '', 'empty string for non existing section');
+
+$text = $podparser->GetPod();
+like ($text, qr/key shows us/, 'GetPod returns text');
 

@@ -6,7 +6,7 @@ use Pod::POM::View::Text;
 use Carp;
 use strict;
 
-our $VERSION = '0.8';
+our $VERSION = '0.9';
 
 # constructor
 sub new {
@@ -41,14 +41,17 @@ sub ParseFile {
     my $pod;
     open(IN, $file) || croak "Can't read $file";
     while (my $line = <IN>) {
-        if ($line =~ /^$self->{comment}/) {
-            $line =~ s/^$self->{comment}\s*//;
+        if ($line =~ /^\s*$self->{comment}/) {
+            $line =~ s/^\s*$self->{comment}\s*//;
             $line .= "\n" if ! $line;
             $pod .= $line ;  
         }
     }
     
     close(IN);
+    if (! $pod ) {
+        croak "Could not extract POD from $file, using comment char $self->{comment}"; 
+    }
     $self->{pod} = $pod;
     return $pod;
 }
@@ -89,7 +92,6 @@ sub Pod2Hash {
     my $pom    = $parser->parse_text( $self->{pod} ) || croak $parser->error();
     $self->{pom} = $pom;
 
-    my %store;
     foreach my $section ( $pom->head1() ) {
         my $title = $section->title();
 
@@ -98,7 +100,7 @@ sub Pod2Hash {
 
         foreach my $key ( $section->head2() ) {
             my $subtitle = $key->title(); 
-            $self->{podhash}->{"$title::$subtitle"} = $self->{view}->view_head2( $key );
+            $self->{podhash}->{"$title-=-$subtitle"} = $self->{view}->view_head2( $key );
         }
     }
     return $self->{podhash};
@@ -121,13 +123,13 @@ sub Pod4Section {
     }
     my $pod = '';
     if ( $key ) {
-        if (! exists $self->{podhash}->{"$section::$key"} ) {
+        if (! exists $self->{podhash}->{"$section-=-$key"} ) {
             if ($self->{ignoremissing}) {
                 return '';
             }    
             croak "Key $key not found in section $section!";
         }
-        $pod = $self->{podhash}->{"$section::$key"};
+        $pod = $self->{podhash}->{"$section-=-$key"};
          
     } else {
         $pod = $self->{podhash}->{$section};
@@ -135,22 +137,27 @@ sub Pod4Section {
     return $pod; 
 }
 
-# display entire pod
 sub DisplayPod {
+    my $self = shift;
+    print $self->GetPod();
+}
+
+# gets the entire pod
+sub GetPod {
     my $self = shift;
 
     if (! $self->{pom} ) {
         # not parsed yet
         $self->Pod2Hash();
     }
-    $self->{view}->print( $self->{pom} );
+    return $self->{pom}->present( $self->{view} );
 }
 
 
 1;
 __END__
 
-=head1 Pod::InComments
+=head1 NAME 
 
 Pod::InComments - Perl extension for extracting POD documentation from comments in config file 
 
@@ -232,6 +239,10 @@ then doing:
 
 Saves the extracted pod to the $file. If you omit a file name, it will append '.pod' to the config file you parsed and saves to that file.
 
+=item GetPod()
+
+Returns the entire POD formatted in text.
+
 =item DisplayPod()
 
 Prints the entire extracted POD documentation to STDOUT.
@@ -241,6 +252,7 @@ Prints the entire extracted POD documentation to STDOUT.
 =head2 EXPORT
 
 None by default.
+
 
 =head1 AUTHOR
 

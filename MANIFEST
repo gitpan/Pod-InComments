@@ -5,4 +5,5 @@ README
 t/Pod-InComments.t
 t/test.cnf
 lib/Pod/InComments.pm
+bin/config2pod.pl
 META.yml                                 Module meta-data (added by MakeMaker)
